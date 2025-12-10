@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Căutare Spotify</title>
+  <link rel = "stylesheet" href = "searchstyle.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">Spotify</div>
+    <nav>
+      <a href="#">Acasă</a>
+      <a href="#">Bibliotecă</a>
+      <a href="#">Căutare</a>
+      <a href="#">Setări</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" placeholder="Caută melodii sau artiști..." id="searchInput">
+    </div>
+
+    <div class="results" id="results">
+      <!-- Rezultatele căutării vor fi afișate aici -->
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Spotify - Căutare Demo
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('results');
+
+    const sampleData = [
+      {type: 'Melodie', name: 'Song 1', img: 'https://via.placeholder.com/200'},
+      {type: 'Artist', name: 'Artist 1', img: 'https://via.placeholder.com/200'},
+      {type: 'Melodie', name: 'Song 2', img: 'https://via.placeholder.com/200'},
+      {type: 'Artist', name: 'Artist 2', img: 'https://via.placeholder.com/200'},
+      {type: 'Melodie', name: 'Song 3', img: 'https://via.placeholder.com/200'}
+    ];
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      resultsContainer.innerHTML = '';
+      const filtered = sampleData.filter(item => item.name.toLowerCase().includes(query));
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('result-card');
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>${item.type}</p>
+        `;
+        resultsContainer.appendChild(card);
+      });
+    });
+  </script>
+
+</body>
+</html>

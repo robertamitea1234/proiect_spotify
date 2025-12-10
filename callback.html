@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spotify Callback</title>
+</head>
+<body>
+  <h1>Te-ai autentificat!</h1>
+  <div id="result"></div>
+
+<script>
+  // Citim token-ul din URL (hash)
+  const hash = window.location.hash.substring(1); // scoate #
+  const params = new URLSearchParams(hash);
+  const token = params.get("access_token");
+
+  if (!token) {
+    document.getElementById("result").innerText = "Nu s-a primit token. Verifica autentificarea.";
+  } else {
+    document.getElementById("result").innerText = "Token primit! Vezi consola pentru datele tale.";
+
+    // Salvam token-ul local
+    localStorage.setItem("spotify_token", token);
+
+    // Preluam datele userului
+    fetch("https://api.spotify.com/v1/me", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+    .then(r => r.json())
+    .then(data => {
+      console.log("Date utilizator:", data);
+      const userInfo = `
+        <p>Nume: ${data.display_name}</p>
+        <p>Email: ${data.email}</p>
+        <p>ID: ${data.id}</p>
+      `;
+      document.getElementById("result").innerHTML += userInfo;
+    })
+    .catch(err => {
+      console.error("Eroare la preluarea datelor:", err);
+      document.getElementById("result").innerText = "Eroare la preluarea datelor user.";
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="loginstyle.css">
+<html>
+<head>
+  <title>Login Spotify</title>
+</head>
+<body>
+  <h1>Login cu Spotify</h1>
+  <button id="loginBtn">Login</button>
+
+<script>
+const clientId = "7a8a584b66a14b9fbe1766ab92b18420";
+const redirectUri = "http://127.0.0.1:5500/index.html";
+const scopes = "user-read-email playlist-read-private";
+
+// generează PKCE code verifier + code challenge
+async function generatePKCE() {
+  const verifier = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(64))))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+
+  const data = new TextEncoder().encode(verifier);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+
+  const challenge = btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+
+  localStorage.setItem("pkce_verifier", verifier);
+  return challenge;
+}
+
+document.getElementById("loginBtn").onclick = async () => {
+  const challenge = await generatePKCE();
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    response_type: "code",
+    redirect_uri: redirectUri,
+    scope: scopes,
+    code_challenge_method: "S256",
+    code_challenge: challenge
+  });
+
+  window.location = "https://accounts.spotify.com/authorize?" + params.toString();
+};
+</script>
+</body>
+</html>
